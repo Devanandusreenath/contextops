@@ -1,0 +1,50 @@
+# ContextOps: FalkorDB + FastAPI backend.   Start: docker compose up --build -d
+# NOTE: the FalkorDB image tag is `latest`; pin a tested tag (e.g. falkordb/falkordb:vX.Y.Z) once you have verified one.
+services:
+  falkordb:
+    image: falkordb/falkordb:latest
+    container_name: contextops-falkordb
+    restart: unless-stopped
+    environment:
+      # persistence: snapshot every 60s if >=1 change, plus append-only file
+      REDIS_ARGS: "--save 60 1 --appendonly yes"
+    ports:
+      # bound to localhost only: the database is NOT exposed to your network
+      - "127.0.0.1:6379:6379"
+      - "127.0.0.1:3001:3000"      # FalkorDB Browser (container port 3000 -> host 3001)
+    volumes:
+      - falkordb_data:/var/lib/falkordb/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build: ./backend
+    container_name: contextops-backend
+    restart: unless-stopped
+    depends_on:
+      falkordb:
+        condition: service_started   # the backend itself retries the DB connection (up to ~30 s)
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      FALKORDB_HOST: falkordb        # service name, not localhost
+      FALKORDB_PORT: 6379
+      FALKORDB_PASSWORD: ${FALKORDB_PASSWORD:-}
+      FALKORDB_GRAPH: ${FALKORDB_GRAPH:-contextops}
+      AGENT_MODE: ${AGENT_MODE:-auto}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      LLM_AUTH_STYLE: ${LLM_AUTH_STYLE:-auto}
+      LLM_PROVIDER: ${LLM_PROVIDER:-auto}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.1-flash-lite}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173,http://localhost:8080,http://127.0.0.1:8080}
+      AUTO_SEED: ${AUTO_SEED:-true}
+    ports:
+      - "127.0.0.1:8000:8000"
+
+volumes:
+  falkordb_data:

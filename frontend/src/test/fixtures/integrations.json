@@ -1,0 +1,1 @@
+{"api":{"version":"1.0.0","env":"development"},"falkordb":{"connected":true,"graph":"live_demo","host":"localhost","port":6390,"moduleVersion":"4.18.3","nodeCount":58,"edgeCount":124,"seeded":true},"agent":{"configuredMode":"rules","effectiveMode":"rules","llmConfigured":false},"syntheticData":true}

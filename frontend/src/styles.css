@@ -1,0 +1,113 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-violet: var(--violet);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+}
+
+:root {
+  --radius: 0.5rem;
+  --background: oklch(0.17 0.02 260);
+  --foreground: oklch(0.93 0.01 250);
+  --card: oklch(0.21 0.022 258);
+  --card-foreground: oklch(0.93 0.01 250);
+  --surface: oklch(0.19 0.02 259);
+  --surface-2: oklch(0.25 0.024 257);
+  --popover: oklch(0.23 0.024 258);
+  --popover-foreground: oklch(0.93 0.01 250);
+  --primary: oklch(0.78 0.13 200);
+  --primary-foreground: oklch(0.18 0.03 230);
+  --secondary: oklch(0.27 0.025 257);
+  --secondary-foreground: oklch(0.9 0.01 250);
+  --muted: oklch(0.25 0.02 258);
+  --muted-foreground: oklch(0.66 0.025 255);
+  --accent: oklch(0.28 0.03 240);
+  --accent-foreground: oklch(0.95 0.01 250);
+  --violet: oklch(0.7 0.13 295);
+  --success: oklch(0.74 0.15 155);
+  --warning: oklch(0.8 0.14 75);
+  --destructive: oklch(0.66 0.16 22);
+  --destructive-foreground: oklch(0.97 0 0);
+  --border: oklch(0.3 0.022 258);
+  --input: oklch(0.3 0.022 258);
+  --ring: oklch(0.78 0.13 200);
+  --sidebar: oklch(0.15 0.018 262);
+
+  /* graph entity palette */
+  --node-service: oklch(0.78 0.13 200);
+  --node-dataset: oklch(0.76 0.12 170);
+  --node-pipeline: oklch(0.72 0.12 245);
+  --node-incident: oklch(0.66 0.16 22);
+  --node-person: oklch(0.72 0.12 300);
+  --node-team: oklch(0.66 0.13 285);
+  --node-decision: oklch(0.8 0.14 75);
+  --node-document: oklch(0.7 0.02 255);
+  --node-fix: oklch(0.74 0.15 155);
+  --node-test: oklch(0.82 0.14 125);
+  --node-project: oklch(0.74 0.12 50);
+  --edge: oklch(0.45 0.025 255);
+  --shadow-panel: 0 1px 0 0 oklch(1 0 0 / 3%) inset, 0 8px 24px -12px oklch(0 0 0 / 60%);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { color-scheme: dark; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+}
+
+@utility panel {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-panel);
+}
+
+@utility graph-grid {
+  background-image: radial-gradient(oklch(1 0 0 / 6%) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+@keyframes edge-flow { to { stroke-dashoffset: -24; } }
+@utility edge-flow { animation: edge-flow 1.2s linear infinite; }
+@keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--primary) 50%, transparent); } 100% { box-shadow: 0 0 0 8px transparent; } }
+@utility pulse-ring { animation: pulse-ring 1.4s ease-out infinite; }
+@media (prefers-reduced-motion: reduce) { .edge-flow, .pulse-ring { animation: none; } }
